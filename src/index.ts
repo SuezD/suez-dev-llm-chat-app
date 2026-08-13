@@ -45,14 +45,21 @@ const allowedOrigins = [
   "https://suezd.github.io",
 ];
 
-const corsHeaders = {
-	"Access-Control-Allow-Origin":
-	      origin && allowedOrigins.includes(origin)
+function getCorsHeaders(request: Request) {
+  const origin = request.headers.get("Origin");
+
+  return {
+    "Access-Control-Allow-Origin":
+      origin && allowedOrigins.includes(origin)
         ? origin
         : allowedOrigins[1],
-	"Access-Control-Allow-Methods": "POST, OPTIONS",
-	"Access-Control-Allow-Headers": "Content-Type",
-};
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Vary": "Origin",
+  };
+}
+
+const corsHeaders = getCorsHeaders(request);
 
 export default {
 	async fetch(
