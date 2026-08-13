@@ -40,8 +40,16 @@ ABOUT ME:
 ${ABOUT_SUEZ}
 `;
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://suezd.github.io",
+];
+
 const corsHeaders = {
-	"Access-Control-Allow-Origin": "http://localhost:5173",
+	"Access-Control-Allow-Origin":
+	      origin && allowedOrigins.includes(origin)
+        ? origin
+        : allowedOrigins[1],
 	"Access-Control-Allow-Methods": "POST, OPTIONS",
 	"Access-Control-Allow-Headers": "Content-Type",
 };
