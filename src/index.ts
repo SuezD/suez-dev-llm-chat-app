@@ -119,25 +119,30 @@ async function handleChatRequest(
 				message.role === "assistant",
 		);
 
-		const result = await env.AI.run(MODEL_ID, {
-			messages: [
-				{
-					role: "system",
-					content: SYSTEM_PROMPT,
-				},
-				...conversation,
-			],
-			max_tokens: 1024,
-		});
-
-		return Response.json(
-			{
-				answer: result.response,
-			},
-			{
-				headers: corsHeaders,
-			},
+		const inputs = {
+		  messages: [
+		    {
+		      role: "system",
+		      content: SYSTEM_PROMPT,
+		    },
+		    ...conversation,
+		  ],
+		  max_tokens: 1024,
+		  stream: true,
+		} satisfies AiTextGenerationInput & { stream: true };
+		
+		const stream = await env.AI.run<typeof MODEL_ID>(
+		  MODEL_ID,
+		  inputs,
 		);
+		
+		return new Response(stream, {
+		  headers: {
+		    ...corsHeaders,
+		    "content-type": "text/event-stream; charset=utf-8",
+		    "cache-control": "no-cache",
+		  },
+		});
 	} catch (error) {
 		console.error("Error processing chat request:", error);
 
