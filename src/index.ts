@@ -59,8 +59,6 @@ function getCorsHeaders(request: Request) {
   };
 }
 
-const corsHeaders = getCorsHeaders(request);
-
 export default {
 	async fetch(
 		request: Request,
@@ -75,6 +73,7 @@ export default {
 		}
 
 		// Chat API
+		const corsHeaders = getCorsHeaders(request);
 		if (url.pathname === "/api/chat") {
 			if (request.method === "OPTIONS") {
 				return new Response(null, {
@@ -104,6 +103,7 @@ async function handleChatRequest(
 	request: Request,
 	env: Env,
 ): Promise<Response> {
+	const corsHeaders = getCorsHeaders(request);
 	try {
 		const { messages = [] } = (await request.json()) as {
 			messages: ChatMessage[];
